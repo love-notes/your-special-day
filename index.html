@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6b0f1a">
+<title>for you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dark-red:#6b0f1a;
+    --deep-red:#430a10;
+    --ember:#8c1c22;
+    --butter:#f1cf6a;
+    --butter-soft:#f6dd8e;
+    --butter-pale:#fbeec3;
+    --ink:#2a1410;
+    --cream-paper:#f9e9b9;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html{
+    height:100%;
+    height:-webkit-fill-available;
+  }
+  body{
+    height:100vh;
+    height:calc(var(--vh, 1vh) * 100);
+    height:100dvh;
+    height:-webkit-fill-available;
+    width:100%;
+    overflow:hidden;
+    overscroll-behavior:none;
+    background:var(--dark-red);
+    font-family:'Cormorant Garamond', serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    touch-action:manipulation;
+  }
+  button{ -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+  img{ -webkit-touch-callout:none; }
+  #app{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:calc(var(--vh, 1vh) * 100);
+    height:100dvh;
+    height:-webkit-fill-available;
+  }
+  .page{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(24px);
+    transition:opacity .9s ease, transform .9s ease, visibility 0s linear .9s;
+    overflow:hidden;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+  }
+  .page.active{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+    transition:opacity .9s ease, transform .9s ease, visibility 0s;
+  }
+
+  /* ===================== PAGE 1 ===================== */
+  #page1{ background: radial-gradient(circle at 50% 18%, var(--butter-pale), var(--cream-paper) 70%); }
+  .road-wrap{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .road-svg{
+    width:min(92vw, 480px);
+    height:100%;
+    min-height:100%;
+  }
+  .p1-content{
+    position:relative;
+    z-index:3;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    padding:36px 26px 30px;
+    background:rgba(251,238,195,0.88);
+    backdrop-filter:blur(2px);
+    -webkit-backdrop-filter:blur(2px);
+    border-radius:28px;
+    box-shadow:0 18px 40px rgba(67,10,16,0.12);
+    max-width:88vw;
+  }
+  .p1-title{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:600;
+    color:var(--dark-red);
+    font-size:clamp(26px, 6vw, 40px);
+    line-height:1.28;
+    max-width:480px;
+    text-shadow:0 2px 0 rgba(255,255,255,0.5);
+  }
+  .p1-sub{
+    font-family:'Caveat', cursive;
+    font-size:20px;
+    color:var(--ember);
+    letter-spacing:0.5px;
+    margin-top:-12px;
+  }
+  .heart-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    width:96px;
+    height:96px;
+    animation:heartbeat 2.1s ease-in-out infinite;
+    transition:transform .25s ease;
+  }
+  .heart-btn:hover{ transform:scale(1.08); }
+  .heart-btn:active{ transform:scale(0.92); }
+  @keyframes heartbeat{
+    0%, 100%{ transform:scale(1); }
+    18%{ transform:scale(1.08); }
+    32%{ transform:scale(0.98); }
+    45%{ transform:scale(1.1); }
+    60%{ transform:scale(1); }
+  }
+  .tap-hint{
+    font-family:'Caveat', cursive;
+    font-size:17px;
+    color:var(--ember);
+    opacity:.8;
+  }
+
+  /* ===================== PAGE 2 ===================== */
+  #page2{ background: radial-gradient(circle at 50% 25%, var(--ember), var(--deep-red) 78%); }
+  .player-card{
+    width:min(86vw, 360px);
+    background:var(--butter-soft);
+    border-radius:26px;
+    padding:30px 26px 34px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.4);
+    text-align:center;
+    position:relative;
+  }
+  .player-eyebrow{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:600;
+    color:var(--dark-red);
+    font-size:22px;
+    letter-spacing:0.5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .mini-heart{ width:16px; height:16px; flex:none; }
+  .album-frame{
+    width:100%;
+    aspect-ratio:1/0.78;
+    background:#1c0c0c;
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:20px;
+    box-shadow: inset 0 0 0 6px var(--butter-pale);
+  }
+  .album-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    filter:grayscale(85%) contrast(1.05);
+  }
+  .track-name{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:18px;
+    color:var(--ink);
+    margin-bottom:2px;
+  }
+  .track-sub{
+    font-family:'Caveat', cursive;
+    font-size:15px;
+    color:var(--dark-red);
+    margin-bottom:18px;
+  }
+  .progress-track{
+    width:100%;
+    height:3px;
+    background:rgba(107,15,26,0.25);
+    border-radius:4px;
+    position:relative;
+    margin-bottom:22px;
+  }
+  .progress-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:0%;
+    background:var(--dark-red);
+    border-radius:4px;
+    transition:width .3s linear;
+  }
+  .progress-dot{
+    position:absolute;
+    top:50%;
+    left:0%;
+    width:10px; height:10px;
+    background:var(--dark-red);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    transition:left .3s linear;
+  }
+  .controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+  }
+  .ctrl-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:var(--dark-red);
+    opacity:0.55;
+    transition:opacity .2s;
+  }
+  .ctrl-btn.skip:hover{ opacity:0.9; }
+  #playBtn{
+    width:62px;
+    height:62px;
+    border-radius:50%;
+    background:var(--dark-red);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 10px 22px rgba(107,15,26,0.45);
+    transition:transform .2s ease;
+  }
+  #playBtn:hover{ transform:scale(1.05); }
+  #playBtn:active{ transform:scale(0.94); }
+  #playBtn svg{ width:24px; height:24px; }
+  .player-hint{
+    margin-top:20px;
+    font-family:'Caveat', cursive;
+    color:var(--butter-pale);
+    font-size:16px;
+    opacity:.85;
+  }
+
+  /* ===================== PAGE 3 (letter) ===================== */
+  #page3{
+    background: radial-gradient(circle at 50% 0%, var(--ember) 0%, var(--deep-red) 55%, #2c0608 100%);
+    padding:30px 18px;
+  }
+  .letter-wrap{
+    width:min(90vw, 460px);
+    max-height:min(88vh, 88dvh);
+    background:var(--cream-paper);
+    border-radius:6px;
+    box-shadow:0 30px 70px rgba(0,0,0,0.5);
+    padding:24px 22px 22px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    overflow:visible;
+  }
+  .letter-tape{
+    position:absolute;
+    top:-12px; left:50%;
+    transform:translateX(-50%) rotate(-2deg);
+    width:120px; height:30px;
+    background:rgba(255,255,255,0.35);
+    border:1px solid rgba(255,255,255,0.5);
+  }
+  .letter-photo{
+    width:128px;
+    height:128px;
+    margin:6px auto 14px;
+    border-radius:50%;
+    overflow:hidden;
+    border:4px solid var(--dark-red);
+    box-shadow:0 8px 18px rgba(0,0,0,0.35);
+    flex:none;
+  }
+  .letter-photo img{
+    width:100%; height:100%; object-fit:cover;
+    filter:grayscale(70%) contrast(1.05);
+  }
+  .letter-heading{
+    font-family:'Caveat', cursive;
+    text-align:center;
+    color:var(--dark-red);
+    font-size:22px;
+    margin-bottom:10px;
+  }
+  .letter-scroll{
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding-right:4px;
+    flex:1;
+    min-height:0;
+  }
+  .letter-scroll::-webkit-scrollbar{ width:5px; }
+  .letter-scroll::-webkit-scrollbar-thumb{ background:rgba(107,15,26,0.3); border-radius:4px; }
+  #typewriter{
+    font-family:'Cormorant Garamond', serif;
+    font-size:17px;
+    line-height:1.75;
+    color:var(--ink);
+    white-space:pre-wrap;
+  }
+  .cursor{
+    display:inline-block;
+    width:2px;
+    background:var(--dark-red);
+    animation:blink 0.9s steps(1) infinite;
+    margin-left:1px;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .letter-next{
+    margin:16px auto 2px;
+    display:block;
+    background:var(--dark-red);
+    color:var(--butter-pale);
+    border:none;
+    font-family:'Caveat', cursive;
+    font-size:18px;
+    letter-spacing:0.5px;
+    padding:11px 30px;
+    border-radius:30px;
+    cursor:pointer;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .6s ease, transform .6s ease, background .2s ease;
+    pointer-events:none;
+  }
+  .letter-next.show{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .letter-next:hover{ background:var(--ember); }
+
+  /* ===================== PAGE 4 ===================== */
+  #page4{ background: radial-gradient(circle at 50% 15%, var(--ember), var(--deep-red) 80%); padding:24px; }
+  .frame-wrap{
+    width:min(88vw, 360px);
+    background:var(--butter-pale);
+    border-radius:4px;
+    padding:22px 20px 26px;
+    box-shadow:0 30px 70px rgba(0,0,0,0.5) , 0 0 0 1px rgba(0,0,0,0.05);
+    position:relative;
+  }
+  .frame-tape{
+    position:absolute;
+    top:-12px; left:50%;
+    transform:translateX(-50%) rotate(2deg);
+    width:110px; height:28px;
+    background:rgba(255,255,255,0.4);
+    border:1px solid rgba(255,255,255,0.55);
+  }
+  .heart-photo{
+    width:100%;
+    margin-bottom:18px;
+    position:relative;
+  }
+  .heart-photo:last-of-type{ margin-bottom:6px; }
+  .heart-photo svg{ width:100%; height:auto; display:block; }
+  .heart-photo .cap{
+    text-align:right;
+    font-family:'Caveat', cursive;
+    color:var(--ink);
+    font-size:16px;
+    margin-top:-6px;
+    transform:rotate(-3deg);
+    padding-right:18%;
+  }
+  .frame-title{
+    text-align:center;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    color:var(--dark-red);
+    font-size:20px;
+    margin-top:8px;
+    letter-spacing:0.5px;
+  }
+  .end-note{
+    text-align:center;
+    font-family:'Caveat', cursive;
+    color:var(--butter-pale);
+    font-size:17px;
+    margin-top:18px;
+    opacity:.9;
+  }
+
+  audio{ display:none; }
+
+  @media (max-height: 700px){
+    .p1-content{ gap:16px; padding:28px 22px 24px; }
+    .p1-title{ font-size:clamp(22px, 6vw, 32px); }
+    .heart-btn{ width:78px; height:78px; }
+    .player-card{ padding:22px 20px 26px; }
+    .album-frame{ margin-bottom:14px; }
+    .letter-photo{ width:96px; height:96px; margin:2px auto 10px; }
+    #typewriter{ font-size:16px; line-height:1.65; }
+  }
+
+  @media (max-width: 360px){
+    .p1-title{ font-size:22px; }
+    .player-card, .letter-wrap, .frame-wrap{ width:92vw; }
+  }
+
+  @media (orientation: landscape) and (max-height: 480px){
+    .road-svg{ width:auto; height:100%; }
+    .p1-content{ padding:18px 20px; gap:12px; }
+    .p1-title{ font-size:20px; }
+    .heart-btn{ width:60px; height:60px; }
+    .letter-wrap{ max-height:92vh; padding:16px 18px; }
+    .letter-photo{ width:72px; height:72px; margin:0 auto 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- PAGE 1 -->
+  <section class="page active" id="page1">
+    <div class="road-wrap">
+      <svg class="road-svg" viewBox="0 0 480 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <path d="M 70 -80
+                 C 70 40, 260 10, 260 130
+                 C 260 250, 50 230, 50 350
+                 C 50 460, 270 450, 270 570
+                 C 270 670, 90 650, 80 760
+                 C 73 840, 90 900, 90 980"
+              fill="none" stroke="#3b3034" stroke-width="46" stroke-linecap="round"/>
+        <path d="M 70 -80
+                 C 70 40, 260 10, 260 130
+                 C 260 250, 50 230, 50 350
+                 C 50 460, 270 450, 270 570
+                 C 270 670, 90 650, 80 760
+                 C 73 840, 90 900, 90 980"
+              fill="none" stroke="#fbeec3" stroke-width="2" stroke-linecap="round"
+              stroke-dasharray="2 2" transform="translate(-23,0)" opacity="0.9"/>
+        <path d="M 70 -80
+                 C 70 40, 260 10, 260 130
+                 C 260 250, 50 230, 50 350
+                 C 50 460, 270 450, 270 570
+                 C 270 670, 90 650, 80 760
+                 C 73 840, 90 900, 90 980"
+              fill="none" stroke="#fbeec3" stroke-width="2" stroke-linecap="round"
+              stroke-dasharray="2 2" transform="translate(23,0)" opacity="0.9"/>
+        <path d="M 70 -80
+                 C 70 40, 260 10, 260 130
+                 C 260 250, 50 230, 50 350
+                 C 50 460, 270 450, 270 570
+                 C 270 670, 90 650, 80 760
+                 C 73 840, 90 900, 90 980"
+              fill="none" stroke="#fbeec3" stroke-width="6" stroke-linecap="round"
+              stroke-dasharray="16 14" opacity="0.95"/>
+      </svg>
+    </div>
+
+    <div class="p1-content">
+      <p class="p1-title">happy birthday, sayang.</p>
+      <button class="heart-btn" id="toPage2" aria-label="open">
+        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 88
+                   C 14 62, 0 40, 0 22
+                   C 0 4, 16 -4, 28 4
+                   C 38 10, 46 22, 50 30
+                   C 54 22, 62 10, 72 4
+                   C 84 -4, 100 4, 100 22
+                   C 100 40, 86 62, 50 88 Z"
+                fill="#6b0f1a"/>
+        </svg>
+      </button>
+      <p class="tap-hint">tap the heart, my love</p>
+    </div>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="page" id="page2">
+    <div class="player-card">
+      <div class="player-eyebrow">
+        Love
+        <svg class="mini-heart" viewBox="0 0 100 90"><path d="M50 88 C14 62,0 40,0 22 C0 4,16 -4,28 4 C38 10,46 22,50 30 C54 22,62 10,72 4 C84 -4,100 4,100 22 C100 40,86 62,50 88 Z" fill="#6b0f1a"/></svg>
+        Playlist
+      </div>
+      <div class="album-frame">
+        <img src="namusic.jpg" alt="us" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#3a1c1c,#1c0c0c)'">
+      </div>
+      <p class="track-name">A Song For You</p>
+      <p class="track-sub">this song reminds me of u</p>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-dot" id="progressDot"></div>
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn skip" aria-label="prev">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 6L9 12l11 6z"/></svg>
+        </button>
+        <button id="playBtn" aria-label="play">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="#fbeec3"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pauseIcon" viewBox="0 0 24 24" fill="#fbeec3" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        </button>
+        <button class="ctrl-btn skip" aria-label="next">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM4 6l11 6L4 18z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="player-hint">press play and listen with me</p>
+    <audio id="bgAudio" src="soft.mp3" preload="auto"></audio>
+  </section>
+
+  <!-- PAGE 3 -->
+  <section class="page" id="page3">
+    <div class="letter-wrap">
+      <div class="letter-tape"></div>
+      <div class="letter-photo">
+        <img src="naavatar.jpg" alt="him" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#8c1c22,#430a10)'">
+      </div>
+      <p class="letter-heading">happy birthday, ka mayk</p>
+      <div class="letter-scroll">
+        <p id="typewriter"></p>
+      </div>
+      <button class="letter-next" id="toPage4">open our memories</button>
+    </div>
+  </section>
+
+  <!-- PAGE 4 -->
+  <section class="page" id="page4">
+    <div class="frame-wrap">
+      <div class="frame-tape"></div>
+
+      <div class="heart-photo">
+        <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="heartClip1">
+              <path d="M150 250
+                       C 40 180, 6 120, 6 70
+                       C 6 18, 50 0, 80 14
+                       C 112 28, 138 60, 150 84
+                       C 162 60, 188 28, 220 14
+                       C 250 0, 294 18, 294 70
+                       C 294 120, 260 180, 150 250 Z"/>
+            </clipPath>
+          </defs>
+          <image href="photo1.jpg" width="300" height="260" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip1)"
+                 onerror="this.setAttribute('href','')"/>
+          <path d="M150 250
+                   C 40 180, 6 120, 6 70
+                   C 6 18, 50 0, 80 14
+                   C 112 28, 138 60, 150 84
+                   C 162 60, 188 28, 220 14
+                   C 250 0, 294 18, 294 70
+                   C 294 120, 260 180, 150 250 Z"
+                fill="none" stroke="#430a10" stroke-width="3" opacity="0.5"/>
+        </svg>
+        <p class="cap">our first date</p>
+      </div>
+
+      <div class="heart-photo">
+        <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="heartClip2">
+              <path d="M150 250
+                       C 40 180, 6 120, 6 70
+                       C 6 18, 50 0, 80 14
+                       C 112 28, 138 60, 150 84
+                       C 162 60, 188 28, 220 14
+                       C 250 0, 294 18, 294 70
+                       C 294 120, 260 180, 150 250 Z"/>
+            </clipPath>
+          </defs>
+          <image href="photo2.jpg" width="300" height="260" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip2)"
+                 onerror="this.setAttribute('href','')"/>
+          <path d="M150 250
+                   C 40 180, 6 120, 6 70
+                   C 6 18, 50 0, 80 14
+                   C 112 28, 138 60, 150 84
+                   C 162 60, 188 28, 220 14
+                   C 250 0, 294 18, 294 70
+                   C 294 120, 260 180, 150 250 Z"
+                fill="none" stroke="#430a10" stroke-width="3" opacity="0.5"/>
+        </svg>
+        <p class="cap">our last date before ldr</p>
+      </div>
+
+      <p class="frame-title">our little story</p>
+    </div>
+    <p class="end-note">happy birthday, sayang.</p>
+  </section>
+
+</div>
+
+<script>
+  // fallback for browsers without dvh support (older iOS Safari / Android WebViews)
+  function setVH(){
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  }
+  setVH();
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', setVH);
+</script>
+<script>
+  const pages = {
+    1: document.getElementById('page1'),
+    2: document.getElementById('page2'),
+    3: document.getElementById('page3'),
+    4: document.getElementById('page4'),
+  };
+
+  function goTo(n){
+    Object.values(pages).forEach(p => p.classList.remove('active'));
+    pages[n].classList.add('active');
+    if(n === 3){ startTypewriter(); }
+  }
+
+  document.getElementById('toPage2').addEventListener('click', () => goTo(2));
+  document.getElementById('toPage4').addEventListener('click', () => goTo(4));
+
+  /* ---------- PAGE 2: music player ---------- */
+  const audio = document.getElementById('bgAudio');
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+  const progressFill = document.getElementById('progressFill');
+  const progressDot = document.getElementById('progressDot');
+  let advanced = false;
+
+  playBtn.addEventListener('click', () => {
+    if(audio.paused){
+      audio.play().catch(()=>{});
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+      if(!advanced){
+        advanced = true;
+        setTimeout(() => { goTo(3); }, 1000);
+      }
+    } else {
+      audio.pause();
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    }
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if(audio.duration){
+      const pct = (audio.currentTime / audio.duration) * 100;
+      progressFill.style.width = pct + '%';
+      progressDot.style.left = pct + '%';
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+  });
+
+  /* ---------- PAGE 3: typewriter letter ---------- */
+  const letterText =
+`Happy 18th birthday, kaka mayki. 
+
+aku bangga sekali bb sudah melewati banyak hal, sampai kamu berada di umurmu yang baru ini. kaka mayki, aku adalah orang yang akan selalu bangga sama bb yaa. dan jujur aku senang bisa ketemu kamu, dan jadi bagian dari hidup kamu. yang paling buat aku senang, aku bisa ikut merayakan ulang tahunmu yang pertama bareng aku. dan walaupun kita sekarang harus jauh jauhan, itu ngga sedikit pun mengurangi rasa senang aku di hari ulang tahun bb. semoga diumur baru ini, Tuhan selalu menjaga kamu dimanapun kamu berada dan melangkah. semoga kamu selalu disehatkan, dikuatkan, serta hati yang kuat untuk menghadapi apapun yang akan masuk kedalam hidup bb. Happy birthday sayang, lovee uu.`;
+
+  let typed = false;
+  function startTypewriter(){
+    if(typed) return;
+    typed = true;
+    const el = document.getElementById('typewriter');
+    const nextBtn = document.getElementById('toPage4');
+    let i = 0;
+    el.textContent = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    cursor.textContent = '\u00A0';
+
+    function type(){
+      if(i < letterText.length){
+        el.textContent = letterText.slice(0, i + 1);
+        el.appendChild(cursor);
+        i++;
+        const ch = letterText[i-1];
+        const delay = (ch === '.' || ch === ',') ? 90 : 22;
+        setTimeout(type, delay);
+      } else {
+        nextBtn.classList.add('show');
+      }
+    }
+    type();
+  }
+</script>
+
+</body>
+</html>
